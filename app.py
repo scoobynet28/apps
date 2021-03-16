@@ -342,7 +342,12 @@ def main():
         scrape_comments_with_replies()
     elif activities == "Analisa Sentimen Komentar":
         st.subheader("Data Komentar YouTube")
-        df = pd.read_csv('./YouTube-Komentar.csv')
+        file_csv_yt = ('./YouTube-Komentar.csv')
+        if os.path.exists(file_csv_yt):
+                df = pd.read_csv(file_csv_yt)
+                st.dataframe(df)
+            else:
+               st.write("""Maaf Data Komentar YouTube Belum Ada""") 
 
         st.dataframe(df)
         st.write("""=========================================================================""")
