@@ -10,8 +10,12 @@ from google_trans_new import google_translator
 from apiclient.discovery import build
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
+import numpy as np
+import pickle
+import pandas as pd
+import streamlit as st 
 
-
+@st.cache (suppress_st_warning = True)
 def scrape_comments_with_replies():
         st.subheader("Input Video ID YouTube")
         ID = st.text_input(label='ID')
@@ -85,8 +89,9 @@ def scrape_comments_with_replies():
                             "Likes": [i[3] for i in box], "Reply Count": [i[4] for i in box]})
 
             df.to_csv("YouTube-Komentar.csv", index=False, header=False)
+            df.shape
             st.success('Komentar Youtube Berhasil Discrape!')
-
+@st.cache (suppress_st_warning = True)
 def preprocessing ():
         st.info('Proses Preprocessing....')
         # ------ Case Folding ---------
@@ -268,7 +273,7 @@ def preprocessing ():
         sentiment_count = pd.DataFrame({'Sentiment' :sentiment_count.index, 'Label' :sentiment_count.values})
         fig = px.pie(sentiment_count, values='Label', names='Sentiment')
         st.plotly_chart(fig)
-
+@st.cache (suppress_st_warning = True)
 def loadpage(): 
             st.markdown('''
             <div>
@@ -335,13 +340,21 @@ def main():
               st.subheader("Hasil Data Sebelumnya")
               st.dataframe(df)
         else:
-              st.warning('''Maaf Data Komentar YouTube Belum Ada,
-                    Lakukan Scrape Komentar Youtube Dulu''') 
+              st.info('''Maaf Data Komentar YouTube Belum Ada,
+                    Lakukan Scrape Komentar YouTube Dulu''') 
 
         st.write("""=========================================================================""")
             
         if st.button("Lakukan Preprocessing"):
-            preprocessing()
+            file_csv_pre = ('./YouTube-Komentar.csv')
+            if os.path.exists(file_csv_pre):
+                df = pd.read_csv(file_csv_pre)
+                preprocessing()
+                
+                
+            else:
+               st.warning("""Tidak Ditemukan File Data Komentar YouTube, akukan Scrape Komentar YouTube Dulu""") 
+           
 
         if st.checkbox("Tampilkan Analisis Data Sebelumnya "):
             file_csv = ('./Hasil-Akhir.csv')
