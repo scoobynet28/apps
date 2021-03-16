@@ -15,7 +15,6 @@ import pickle
 import pandas as pd
 import streamlit as st 
 
-@st.cache (suppress_st_warning = True)
 def scrape_comments_with_replies():
         st.subheader("Input Video ID YouTube")
         ID = st.text_input(label='ID')
@@ -91,7 +90,7 @@ def scrape_comments_with_replies():
             df.to_csv("YouTube-Komentar.csv", index=False, header=False)
             df.shape
             st.success('Komentar Youtube Berhasil Discrape!')
-@st.cache (suppress_st_warning = True)
+
 def preprocessing ():
         st.info('Proses Preprocessing....')
         # ------ Case Folding ---------
@@ -273,7 +272,7 @@ def preprocessing ():
         sentiment_count = pd.DataFrame({'Sentiment' :sentiment_count.index, 'Label' :sentiment_count.values})
         fig = px.pie(sentiment_count, values='Label', names='Sentiment')
         st.plotly_chart(fig)
-@st.cache (suppress_st_warning = True)
+
 def loadpage(): 
             st.markdown('''
             <div>
