@@ -1,1 +1,1 @@
-web: sh setup.sh && streamlit run Ta-Mampe.py
+web: sh setup.sh && streamlit run TA-Mampe.py
