@@ -37,6 +37,82 @@ from PIL import Image
 pickle_in = open("classifier.pkl","rb")
 classifier=pickle.load(pickle_in)
 
+ def scrape_comments_with_replies():
+        st.subheader("Input Video ID YouTube")
+        ID = st.text_input(label='ID')
+        if st.button("Enter"):
+            api_key = "AIzaSyCNA7RgurTeVuiT7svjLXRXRJBXs1JWNAg"
+            youtube = build("youtube", "v3", developerKey=api_key)
+            box = [["Nama", "Komentar", "Waktu", "Likes", "Reply Count"]]
+            data = youtube.commentThreads().list(part="snippet", videoId=ID, maxResults="100", textFormat="plainText").execute()
+
+            for i in data["items"]:
+
+                name = i["snippet"]["topLevelComment"]["snippet"]["authorDisplayName"]
+                comment = i["snippet"]["topLevelComment"]["snippet"]["textDisplay"]
+                published_at = i["snippet"]["topLevelComment"]["snippet"]["publishedAt"]
+                likes = i["snippet"]["topLevelComment"]["snippet"]["likeCount"]
+                replies = i["snippet"]["totalReplyCount"]
+
+                box.append([name, comment, published_at, likes, replies])
+
+                totalReplyCount = i["snippet"]["totalReplyCount"]
+
+                if totalReplyCount > 0:
+
+                    parent = i["snippet"]["topLevelComment"]["id"]
+
+                    data2 = youtube.comments().list(part="snippet", maxResults="100", parentId=parent,
+                                                    textFormat="plainText").execute()
+
+                    for i in data2["items"]:
+                        name = i["snippet"]["authorDisplayName"]
+                        comment = i["snippet"]["textDisplay"]
+                        published_at = i["snippet"]["publishedAt"]
+                        likes = i["snippet"]["likeCount"]
+                        replies = ""
+
+                        box.append([name, comment, published_at, likes, replies])
+
+            while ("nextPageToken" in data):
+
+                data = youtube.commentThreads().list(part="snippet", videoId=ID, pageToken=data["nextPageToken"],
+                                                    maxResults="100", textFormat="plainText").execute()
+
+                for i in data["items"]:
+                    name = i["snippet"]["topLevelComment"]["snippet"]["authorDisplayName"]
+                    comment = i["snippet"]["topLevelComment"]["snippet"]["textDisplay"]
+                    published_at = i["snippet"]["topLevelComment"]["snippet"]["publishedAt"]
+                    likes = i["snippet"]["topLevelComment"]["snippet"]["likeCount"]
+                    replies = i["snippet"]["totalReplyCount"]
+
+                    box.append([name, comment, published_at, likes, replies])
+
+                    totalReplyCount = i["snippet"]["totalReplyCount"]
+
+                    if totalReplyCount > 0:
+
+                        parent = i["snippet"]["topLevelComment"]["id"]
+
+                        data2 = youtube.comments().list(part="snippet", maxResults="100", parentId=parent,
+                                                        textFormat="plainText").execute()
+
+                        for i in data2["items"]:
+                            name = i["snippet"]["authorDisplayName"]
+                            comment = i["snippet"]["textDisplay"]
+                            published_at = i["snippet"]["publishedAt"]
+                            likes = i["snippet"]["likeCount"]
+                            replies = ""
+
+                            box.append([name, comment, published_at, likes, replies])
+
+            df = pd.DataFrame({"Nama": [i[0] for i in box], "Komentar": [i[1] for i in box], "Waktu": [i[2] for i in box],
+                            "Likes": [i[3] for i in box], "Reply Count": [i[4] for i in box]})
+
+            df.to_csv("YouTube-Komentar.csv", index=False, header=False)
+            df.shape
+            st.success('Komentar Youtube Berhasil Discrape!')
+
 #@app.route('/')
 def welcome():
     return "Welcome All"
