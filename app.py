@@ -11,23 +11,13 @@ Created on Fri May 15 12:50:04 2020
 
 @author: krish.naik
 """
-import os,sklearn,time,plotly.express as px, pandas as pd, nltk,re,string,streamlit as st
-from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-from nltk.stem import PorterStemmer
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize, sent_tokenize
-from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
-from sklearn.model_selection import train_test_split #pembagi dataset menjadi training dan testing set
-from sklearn.metrics import precision_score,f1_score,recall_score,accuracy_score,confusion_matrix,classification_report #evaluasi performa model
-from sklearn.feature_extraction.text import TfidfVectorizer
-from google_trans_new import google_translator
-from apiclient.discovery import build
-from sklearn.model_selection import train_test_split
-from sklearn.naive_bayes import MultinomialNB
 
+from apiclient.discovery import build
 import numpy as np
 import pickle
+import pandas as pd
 #from flasgger import Swagger
+import streamlit as st 
 
 from PIL import Image
 
@@ -37,7 +27,7 @@ from PIL import Image
 pickle_in = open("classifier.pkl","rb")
 classifier=pickle.load(pickle_in)
 
- def scrape_comments_with_replies():
+def scrape_comments_with_replies():
         st.subheader("Input Video ID YouTube")
         ID = st.text_input(label='ID')
         if st.button("Enter"):
@@ -153,6 +143,9 @@ def predict_note_authentication(variance,skewness,curtosis,entropy):
 
 
 def main():
+    activities = st.sidebar.selectbox("Pilih Menu",( "Input Video ID YouTube","Analisa Sentimen Komentar","Tentang"))
+    if activities == "Input Video ID YouTube":
+        scrape_comments_with_replies()
     st.title("Bank Authenticator")
     html_temp = """
     <div style="background-color:tomato;padding:10px">
@@ -174,6 +167,3 @@ def main():
 
 if __name__=='__main__':
     main()
-    
-    
-    
