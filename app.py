@@ -1,17 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Jun 13 02:20:31 2020
-
-@author: Krish Naik
-"""
-
-# -*- coding: utf-8 -*-
-"""
-Created on Fri May 15 12:50:04 2020
-
-@author: krish.naik
-"""
-
 import os,sklearn,plotly.express as px, pandas as pd, nltk,re,string,streamlit as st
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from nltk.corpus import stopwords
@@ -27,16 +13,7 @@ from sklearn.naive_bayes import MultinomialNB
 import numpy as np
 import pickle
 import pandas as pd
-#from flasgger import Swagger
 import streamlit as st 
-
-from PIL import Image
-
-#app=Flask(__name__)
-#Swagger(app)
-
-pickle_in = open("classifier.pkl","rb")
-classifier=pickle.load(pickle_in)
 
 def scrape_comments_with_replies():
         st.subheader("Input Video ID YouTube")
@@ -296,54 +273,75 @@ def preprocessing ():
         fig = px.pie(sentiment_count, values='Label', names='Sentiment')
         st.plotly_chart(fig)
 
-
-#@app.route('/')
-def welcome():
-    return "Welcome All"
-
-#@app.route('/predict',methods=["Get"])
-def predict_note_authentication(variance,skewness,curtosis,entropy):
-    
-    """Let's Authenticate the Banks Note 
-    This is using docstrings for specifications.
-    ---
-    parameters:  
-      - name: variance
-        in: query
-        type: number
-        required: true
-      - name: skewness
-        in: query
-        type: number
-        required: true
-      - name: curtosis
-        in: query
-        type: number
-        required: true
-      - name: entropy
-        in: query
-        type: number
-        required: true
-    responses:
-        200:
-            description: The output values
-        
-    """
-   
-    prediction=classifier.predict([[variance,skewness,curtosis,entropy]])
-    print(prediction)
-    return prediction
-
-
+def loadpage(): 
+            st.markdown('''
+            <div>
+                <!---<h1 class="title">Abstrak</h1>--->
+                <p class="abstrak">
+                Saat ini YouTube merupakan salah satu media sosial yang paling populer. 
+                Hampir semua kalangan masyarakat saat ini menggunakan Youtube. Youtube 
+                merupakan media sosial yang dapat digunakan untuk mengirim, melihat dan 
+                berbagi video. Pengguna YouTube yang menonton video YouTube dapat 
+                menyampaikan opininya melalui kolom komentar pada YouTube. Komentar yang 
+                disampaikan dapat digunakan sebagai analisis pada video YouTube tersebut. Dari 
+                analisis ini dapat dijadikan sebagai tolak ukur terhadap video yang dibuat untuk 
+                mendapatkan feedback dari penonton, positif atau negatif. Untuk mengatasi 
+                permasalahan klasifikasi komentar pengguna YouTube dirancanglah sebuah sistem 
+                analisis komentar berdasarkan filter YouTube dengan algoritma Naïve Bayes. 
+                Sistem analisis komentar pada YouTube yang dibuat akan menghasilkan klasifikasi 
+                dari komentar-komentar pengguna YouTube dengan kategori positif dan negatif. 
+                Sistem ini diharapkan dapat menjadi bahan evaluasi para konten kreator untuk 
+                meningkatkan kualitas dari saluran YouTubenya.</p>
+            </div>               
+            ''',unsafe_allow_html=True)
+            if st.checkbox("Tentang Penulis dan Pembimbing"):
+                st.markdown('''
+                <div id='container'>
+                    <div id="conten">
+                            <h2 class="title">Penulis</h2>
+                        <p class="biodata">Nama : Mampe P Munthe
+                        <br>Perguruan Tinggi : Universitas Telkom
+                        <br>Program Studi : Teknik Komputer
+                        <br>NIM : 1103198216
+                        <br></p>
+                    </div>
+                </div>
+                <div>
+                    <div id='parent'>
+                        <div id='wide'>
+                            <h2 class="title">Pembimbing I</h2>
+                            <p class="biodata1">Nama  : Anton Siswo Raharjo Ansori S.T., M.T. 
+                            <br>NIP :  15870031</p>
+                        </div>
+                        <div id='narrow'>
+                            <h2 class="title">Pembimbing II</h2>
+                            <p class="biodata1">Nama : Dr. Reza Rendian Septiawan, S.Si., M.Si., M.Sc
+                            <br>NIP : 20910011</p>
+                        </div>
+                    </div>
+                </div>              
+            ''',unsafe_allow_html=True)
+            
 
 def main():
+    st.title("Analisis Sentimen Komentar Pada Saluran Youtube Food Vlogger Berbahasa Indonesia Menggunakan Algoritma Naïve Bayes")
+
     activities = st.sidebar.selectbox("Pilih Menu",( "Input Video ID YouTube","Analisa Sentimen Komentar","Tentang"))
+
     if activities == "Input Video ID YouTube":
         scrape_comments_with_replies()
+        
     elif activities == "Analisa Sentimen Komentar":
         st.subheader("Data Komentar YouTube")
-        df = pd.read_csv('./YouTube-Komentar.csv')
-        st.dataframe(df)
+        file_csv_yt = ('./YouTube-Komentar.csv')
+        if os.path.exists(file_csv_yt):
+              df = pd.read_csv(file_csv_yt)
+              st.subheader("Hasil Data Sebelumnya")
+              st.dataframe(df)
+        else:
+              st.warning('''Maaf Data Komentar YouTube Belum Ada,
+                    Lakukan Scrape Komentar Youtube Dulu''') 
+
         st.write("""=========================================================================""")
             
         if st.button("Lakukan Preprocessing"):
@@ -361,27 +359,9 @@ def main():
             else:
                st.write("""Maaf Data Belum Ada""") 
 
-    st.title("Bank Authenticator")
-    html_temp = """
-    <div style="background-color:tomato;padding:10px">
-    <h2 style="color:white;text-align:center;">Streamlit Bank Authenticator ML App </h2>
-    </div>
-    """
-    st.markdown(html_temp,unsafe_allow_html=True)
-    variance = st.text_input("Variance","Type Here")
-    skewness = st.text_input("skewness","Type Here")
-    curtosis = st.text_input("curtosis","Type Here")
-    entropy = st.text_input("entropy","Type Here")
-    result=""
-    if st.button("Predict"):
-        result=predict_note_authentication(variance,skewness,curtosis,entropy)
-    st.success('The output is {}'.format(result))
-    if st.button("About"):
-        st.text("Lets LEarn")
-        st.text("Built with Streamlit")
+    else:
+        loadpage() 
 
 if __name__=='__main__':
     main()
-    
-    
-    
+   
