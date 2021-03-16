@@ -357,11 +357,10 @@ def main():
                 
                 
             else:
-               st.write("""Maaf Data Belum Ada""") 
+               st.warning("""Maaf Data Belum Ada""") 
 
     else:
         loadpage() 
 
 if __name__=='__main__':
-    main()
-   
+    main()  
