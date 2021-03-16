@@ -11,13 +11,23 @@ Created on Fri May 15 12:50:04 2020
 
 @author: krish.naik
 """
-
+import os,sklearn,time,plotly.express as px, pandas as pd, nltk,re,string,streamlit as st
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from nltk.stem import PorterStemmer
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize, sent_tokenize
+from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
+from sklearn.model_selection import train_test_split #pembagi dataset menjadi training dan testing set
+from sklearn.metrics import precision_score,f1_score,recall_score,accuracy_score,confusion_matrix,classification_report #evaluasi performa model
+from sklearn.feature_extraction.text import TfidfVectorizer
+from google_trans_new import google_translator
+from apiclient.discovery import build
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import MultinomialNB
 
 import numpy as np
 import pickle
-import pandas as pd
 #from flasgger import Swagger
-import streamlit as st 
 
 from PIL import Image
 
