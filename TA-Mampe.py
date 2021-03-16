@@ -88,7 +88,6 @@ def scrape_comments_with_replies():
                             "Likes": [i[3] for i in box], "Reply Count": [i[4] for i in box]})
 
             df.to_csv("YouTube-Komentar.csv", index=False, header=False)
-            df.shape
             st.success('Komentar Youtube Berhasil Discrape!')
 
 def preprocessing ():
